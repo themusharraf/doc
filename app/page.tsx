@@ -11,24 +11,21 @@ export default function Home() {
         target="_blank"
         className="mb-5 sm:text-lg flex items-center gap-2 underline underline-offset-4 sm:-mt-12"
       >
-        Follow along on GitHub{" "}
+        GitHub da kuzatib boring{" "}
         <MoveUpRightIcon className="w-4 h-4 font-extrabold" />
       </Link>
       <h1 className="text-3xl font-bold mb-4 sm:text-6xl">
-        Shunchaki bugun dan boshlang va AllNc sizni muvaffaqiyat sari olib boradi.
-        Orqaga qadam tashlamang, o'z imkoniyatlaringizni sinab ko'ring va dunyoni
-        o'zgartiradigan loyihangizni bugundan boshlang.
+        Shunchaki rivojlanishni bugun dan boshlang bu sizni muvaffaqiyat sari olib boradi.
       </h1>
       <p className="mb-8 sm:text-lg max-w-[800px] text-muted-foreground">
-        Rivojlanish yo‘lida biz bilan birga bo‘ling, g‘oyalaringizni kuchli hujjatlar
-        bilan hayotga tatbiq qiling va dunyo bilan baham ko‘ring.
+        G‘oyalaringizni kuchli usullar bilan hayotga tatbiq qiling va biz bilan birga dunyoni o‘zgartiring.
       </p>
       <div className="flex flex-row items-center gap-5">
         <Link
           href={`/docs${page_routes[0].href}`}
           className={buttonVariants({ className: "px-6", size: "lg" })}
         >
-          Get Stared
+          Boshlash
         </Link>
         <Link
           href="/blog"
@@ -38,12 +35,12 @@ export default function Home() {
             size: "lg",
           })}
         >
-          Read Blog
+          Blogni O‘qish
         </Link>
       </div>
       <span className="flex flex-row items-start sm:gap-2 gap-0.5 text-muted-foreground text-md mt-7 -mb-12 max-[800px]:mb-12 font-code sm:text-base text-sm font-medium">
         <TerminalSquareIcon className="w-5 h-5 sm:mr-1 mt-0.5" />
-        {"npx create-aria-doc <project-directory>"}
+        {"pip install allnc"}
       </span>
     </div>
   );
