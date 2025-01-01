@@ -20,10 +20,10 @@ const monoFont = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AriaDocs - Template",
-  metadataBase: new URL("https://ariadocs.vercel.app/"),
+  title: "BuildBlock - Musharraf",
+  metadataBase: new URL("https://www.allnc.uz"),
   description:
-    "This comprehensive documentation template, crafted with Next.js and available as open-source, delivers a sleek and responsive design, tailored to meet all your project documentation requirements.",
+    "BuildBlock – har bir g‘oyani shakllantiruvchi mustahkam poydevor, kelajakni bugundan qurish uchun eng yaxshi tanlov.",
 };
 
 export default function RootLayout({

@@ -32,11 +32,11 @@ export function FooterButtons() {
   return (
     <>
       <Link
-        href="https://github.com/themusharraf"
+        href="https://t.me/Musharraaf"
         className={buttonVariants({ variant: "outline", size: "sm" })}
       >
         <TriangleIcon className="h-[0.8rem] w-4 mr-2 text-primary fill-current" />
-        Deploy
+        Author
       </Link>
       <Link
         href="https://tirikchilik.uz/musharraf"
