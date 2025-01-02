@@ -1,0 +1,57 @@
+# EIP-1559 Gas Fee Mechanism
+
+## EIP-1559 nima?
+
+**EIP-1559** — bu Ethereum blockchainidagi gas mexanizmini takomillashtirishga qaratilgan yangilik. Bu taklif yordamida tranzaksiya xarajatlari barqarorlashtirilib, foydalanuvchilar uchun aniqroq va adolatliroq tizim joriy etildi. Asosiy maqsadi — gaz narxlarini talab va taklif asosida boshqarish va Ethereumni deflyatsion mexanizmga o'tkazishdir.
+
+---
+
+## EIP-1559 qanday ishlaydi?
+
+### 1. **Base Fee (Asosiy To'lov)**
+- **Base Fee** — bu har bir blok uchun avtomatik hisoblanadigan minimal gaz narxi. 
+- Tarmoqdagi tranzaksiya talabiga qarab **Base Fee**:
+  - Talab yuqori bo'lsa — oshadi.
+  - Talab past bo'lsa — kamayadi.
+- **Base Fee "burn qilinadi"**, ya'ni yoqib yuboriladi va validatorlarga ketmaydi.
+
+---
+
+### 2. **Tip (Mukofot)**
+- **Tip** — foydalanuvchi tomonidan mayner yoki validatorlarga mukofot sifatida to'lanadigan qo'shimcha miqdor. 
+- **Tip** tranzaksiyaning ustuvorligini oshiradi, ya'ni tranzaksiya tezroq blokka kiritiladi.
+
+---
+
+### 3. **Max Fee (Maksimal To'lov)**
+- **Max Fee** — foydalanuvchi tranzaksiya uchun to'lashga tayyor bo'lgan maksimal gaz narxi.
+- Agar **Base Fee + Tip** foydalanuvchining **Max Fee** miqdoridan kam bo'lsa, ortiqcha summa foydalanuvchiga qaytariladi.
+
+---
+
+## Soliq Mexanizmi
+
+EIP-1559 mexanizmida to'lovlar quyidagicha taqsimlanadi:
+
+1. **Base Fee**: Ethereum tarmog'i tomonidan yoqib yuboriladi (**burn qilinadi**).
+2. **Tip**: Maynerlar yoki validatorlar uchun mukofot sifatida ajratiladi.
+
+Foydalanuvchining tranzaksiya xarajati:
+
+```plaintext
+Umumiy To'lov = Base Fee + Tip
+
+## Misol
+
+Misol tariqasida quyidagilarni ko'rib chiqamiz:
+
+- **Base Fee**: `20 Gwei`
+- **Tip**: `3 Gwei`
+- **Max Fee**: `30 Gwei`
+
+### Hisoblash
+
+- **Umumiy To'lov**: `Base Fee + Tip = 20 Gwei + 3 Gwei = 23 Gwei`
+- **Yoqilgan miqdor (burn)**: `Base Fee = 20 Gwei`
+- **Validator mukofoti**: `Tip = 3 Gwei`
+- **Qaytariladigan miqdor**: `Max Fee - (Base Fee + Tip) = 30 - 23 = 7 Gwei`.
