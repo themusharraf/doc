@@ -17,10 +17,10 @@ export default async function BlogIndexPage() {
     <div className="w-full mx-auto flex flex-col gap-1 sm:min-h-[91vh] min-h-[88vh] pt-2">
       <div className="mb-7 flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold">
-          Bizning jamoamizdan so'nggi yangiliklar va bloglar!
+          Bizning jamoamizdan songgi yangiliklar va bloglar!
         </h1>
         <p className="text-muted-foreground">
-          Yangi blog postlari va tahlillarni birinchi bo'lib o'qish imkoniyatiga ega bo'ling.
+          Yangi blog postlari va tahlillarni birinchi bolib oqish imkoniyatiga ega boling.
         </p>
       </div>
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-4 mb-5">
