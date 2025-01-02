@@ -216,3 +216,93 @@ export async function getBlogForSlug(slug: string) {
     return undefined;
   }
 }
+
+export type BlockchainMdxFrontmatter = BaseMdxFrontmatter & {
+  date: string;
+  authors: Author[];
+  cover: string;
+};
+
+export async function getAllBlockchainStaticPaths() {
+  try {
+    const blogFolder = path.join(process.cwd(), "/contents/blockchains/");
+    const res = await fs.readdir(blogFolder);
+    return res.map((file) => file.split(".")[0]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+export async function getAllBlockchains() {
+  const blogFolder = path.join(process.cwd(), "/contents/blockchains/");
+  const files = await fs.readdir(blogFolder);
+  const uncheckedRes = await Promise.all(
+    files.map(async (file) => {
+      if (!file.endsWith(".mdx")) return undefined;
+      const filepath = path.join(process.cwd(), `/contents/blockchains/${file}`);
+      const rawMdx = await fs.readFile(filepath, "utf-8");
+      return {
+        ...justGetFrontmatterFromMD<BlogMdxFrontmatter>(rawMdx),
+        slug: file.split(".")[0],
+      };
+    }),
+  );
+  return uncheckedRes.filter((it) => !!it) as (BlogMdxFrontmatter & {
+    slug: string;
+  })[];
+}
+
+export async function getBlockchainForSlug(slug: string) {
+  const blogFile = path.join(process.cwd(), "/contents/blockchains/", `${slug}.mdx`);
+  try {
+    const rawMdx = await fs.readFile(blogFile, "utf-8");
+    return await parseMdx<BlogMdxFrontmatter>(rawMdx);
+  } catch {
+    return undefined;
+  }
+}
+
+export type DocsMdxFrontmatter = BaseMdxFrontmatter & {
+  date: string;
+  authors: Author[];
+  cover: string;
+};
+
+export async function getAllDocsStaticPaths() {
+  try {
+    const blogFolder = path.join(process.cwd(), "/contents/docs/");
+    const res = await fs.readdir(blogFolder);
+    return res.map((file) => file.split(".")[0]);
+  } catch (err) {
+    console.log(err);
+  }
+}
+export async function getAllDocs() {
+  const blogFolder = path.join(process.cwd(), "/contents/docs/");
+  const files = await fs.readdir(blogFolder);
+  const uncheckedRes = await Promise.all(
+    files.map(async (file) => {
+      if (!file.endsWith(".mdx")) return undefined;
+      const filepath = path.join(process.cwd(), `/contents/docs/${file}`);
+      const rawMdx = await fs.readFile(filepath, "utf-8");
+      return {
+        ...justGetFrontmatterFromMD<BlogMdxFrontmatter>(rawMdx),
+        slug: file.split(".")[0],
+      };
+    }),
+  );
+  return uncheckedRes.filter((it) => !!it) as (BlogMdxFrontmatter & {
+    slug: string;
+  })[];
+}
+
+export async function getDocForSlug(slug: string) {
+  const blogFile = path.join(process.cwd(), "/contents/docs/", `${slug}.mdx`);
+  try {
+    const rawMdx = await fs.readFile(blogFile, "utf-8");
+    return await parseMdx<DocsMdxFrontmatter>(rawMdx);
+  } catch {
+    return undefined;
+  }
+}
+
+

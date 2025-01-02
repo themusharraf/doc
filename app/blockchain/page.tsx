@@ -1,23 +1,23 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Author, BlogMdxFrontmatter, getAllBlogs } from "@/lib/markdown";
+import { Author, BlockchainMdxFrontmatter, getAllBlockchains } from "@/lib/markdown";
 import { formatDate2, stringToDate } from "@/lib/utils";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "BuildBlock - Blog",
+  title: "BuildBlock - Blockchain",
 };
 
-export default async function BlogIndexPage() {
-  const blogs = (await getAllBlogs()).sort(
+export default async function BlockchainIndexPage() {
+  const blogs = (await getAllBlockchains()).sort(
     (a, b) => stringToDate(b.date).getTime() - stringToDate(a.date).getTime()
   );
   return (
     <div className="w-full mx-auto flex flex-col gap-1 sm:min-h-[91vh] min-h-[88vh] pt-2">
       <div className="mb-7 flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold">
-          Bizning jamoamizdan songgi yangiliklar va bloglar!
+          Blockchain Tez Kunda!
         </h1>
         <p className="text-muted-foreground">
           Yangi blog postlari va tahlillarni birinchi bolib oqish imkoniyatiga ega boling.
@@ -25,24 +25,24 @@ export default async function BlogIndexPage() {
       </div>
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-4 mb-5">
         {blogs.map((blog) => (
-          <BlogCard {...blog} slug={blog.slug} key={blog.slug} />
+          <BlockchainCard {...blog} slug={blog.slug} key={blog.slug} />
         ))}
       </div>
     </div>
   );
 }
 
-function BlogCard({
+function BlockchainCard({
   date,
   title,
   description,
   slug,
   cover,
   authors,
-}: BlogMdxFrontmatter & { slug: string }) {
+}: BlockchainMdxFrontmatter & { slug: string }) {
   return (
     <Link
-      href={`/blog/${slug}`}
+      href={`/blockchain/${slug}`}
       className="flex flex-col gap-2 items-start border rounded-md py-5 px-3 min-h-[400px]"
     >
       <h3 className="text-md font-semibold -mt-1 pr-7">{title}</h3>
