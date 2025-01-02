@@ -1,0 +1,144 @@
+---
+title: "Python Interview questions 1 dan 16 part 1"
+description: "Python intervyusida o‘zingizni boshqalardan ajratib ko‘rsatish uchun chuqur, qiziqarli savollar va javoblar!."
+date: 02-01-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+
+## Python nima?
+- Python — yuqori darajadagi, tarjimonli dasturlash tili bo‘lib, dinamik semantikaga ega, o‘rganish va tushunish osonligi bilan tanilgan.
+
+## Pythonning asosiy xususiyatlari qanday?
+- Pythonning asosiy xususiyatlariga o‘qilishi oson sintaksis, dinamik tiplashtirish, xotira boshqaruvi va keng qamrovli standart kutubxona kiradi.
+
+## Python’da xotira qanday boshqariladi?
+- Python’da xotira Python xotira boshqaruvchisi tomonidan boshqariladi. Ob’ektlar va ma’lumot tuzilmalari maxsus xotira maydonida saqlanadi, ishlatilmayotgan xotira esa chiqindi yig‘uvchi (garbage collector) tomonidan qayta ishlanadi.
+```python
+import gc
+gc.collect()  # Chiqindi yig'uvchini qo'lda chaqirish
+```
+## Python’dagi dekoratorlar nima?
+- Dekoratorlar Python’da funksiyalar yoki sinflar xatti-harakatini o‘zgartirish imkonini beruvchi dizayn (pattern)naqshidir.
+```python
+def decorator(func):
+    def wrapper():
+        print("Dekoratsiya qilyapman!")
+        func()
+    return wrapper
+
+@decorator
+def salom_ber():
+    print("Salom!")
+
+salom_ber()
+```
+
+## PEP 8 nima?
+- PEP 8 — Python kodini yozish bo‘yicha qo‘llanma va eng yaxshi amaliyotlarni taqdim etuvchi Python Yaxshilash Taklifi (Python Enhancement Proposal).
+
+## Python’dagi lambda funksiyasi nima?
+- Lambda funksiyasi kichik anonim funksiyadir. U istalgan miqdordagi argumentlarni qabul qilishi mumkin, lekin faqat bitta ifodaga ega bo‘ladi.
+```python
+kvadrat = lambda x: x**2
+print(kvadrat(4))  # Natija: 16
+```
+## List va tuple orasidagi farq nima?
+- Asosiy farqi shundaki, listlar o‘zgartiriladigan (mutable), tuplelar esa o‘zgartirilmaydigan (immutable) ma’lumot tuzilmalaridir.
+```python
+my_list = [1, 2, 3]  # O'zgartiriladigan
+my_tuple = (1, 2, 3)  # O'zgartirilmaydigan
+my_list[0] = 10
+my_tuple[0] = 10  # Xatolik beradi!
+```
+## Python’da xotira ajratish qanday amalga oshiriladi?
+- Python’da ichki chiqindi yig‘uvchi mavjud bo‘lib, u ishlatilmayotgan xotirani qayta ishlaydi va xotira maydoni uchun qayta foydalanish imkonini beradi.
+```python
+x = [1, 2, 3]
+del x  # Xotirani bo'shatadi
+```
+
+## Python’da slicing nima?
+- Slicing — bu Python’da list, tuple, string kabi ketma-ketlik turlaridan ma’lum bir oraliqdagi elementlarni tanlash mexanizmidir.
+```python
+my_list = [0, 1, 2, 3, 4, 5]
+print(my_list[1:4])  # Natija: [1, 2, 3]
+```
+## Python modullari nima?
+- Python modullari — bu Python kodini o‘z ichiga olgan .py fayllardir. Har qanday Python fayli modul sifatida ishlatilishi mumkin.
+
+## Python array va list o‘rtasidagi farq nima?
+- Array faqat bitta ma’lumot turidagi elementlarni saqlashi mumkin, list esa turli ma’lumot turlaridagi elementlarni saqlay oladi.
+```python
+import array
+arr = array.array('i', [1, 2, 3])  # Faqat integer
+lst = [1, "ikki", 3.0]  # Har xil turlar
+```
+## Deepcopy va copy o‘rtasidagi farq nima?
+- deepcopy asl obyektning barcha qismlarini rekursiv nusxa ko‘chirib yangi obyekt yaratadi, copy esa yangi obyekt yaratib, unda faqat asl obyektning havolalarini saqlaydi.
+```python
+import copy
+original = [[1, 2], [3, 4]]
+shallow = copy.copy(original)
+deep = copy.deepcopy(original)
+original[0][0] = 99
+print(shallow)  # [ [99, 2], [3, 4] ]
+print(deep)  # [ [1, 2], [3, 4] ]
+```
+## Python’da namespace nima?
+- Namespace — bu nomlarning yagona bo‘lishini ta’minlaydigan nomlash tizimi bo‘lib, nomlar ziddiyatini oldini oladi.
+```python
+x = 10  # Global namespace
+def funksiya():
+    x = 5  # Lokal namespace
+    print(x)
+
+funksiya()  # Natija: 5
+print(x)  # Natija: 10
+```
+## Python’da dictionary nima?
+- Dictionary — bu Python’da ma’lumotlarni xarita ko‘rinishida saqlash uchun ishlatiladigan tartibsiz ma’lumotlar to‘plamidir.
+
+## Python’da range va xrange o‘rtasidagi farq nima?
+- Python 2 versiyasida range va xrange mavjud edi, lekin Python 3 da faqat range mavjud.
+- Python 3: xrange o‘rniga faqat range mavjud bo‘lib, u Python 2 ning xrange ga o‘xshaydi, ya’ni xotiradan samarali foydalanadi.
+- Python 2 -V
+```py
+# range - ro'yxat qaytaradi
+r = range(5)
+print(r)  # Natija: [0, 1, 2, 3, 4]
+
+# xrange - range obyektini qaytaradi (kam xotira ishlatadi)
+xr = xrange(5)
+print(xr)  # Natija: xrange(5)
+```
+- Python 3 -V
+```py
+r = range(5)
+print(r)  # Natija: range(0, 5)
+
+# Xotira va samaradorlikni tekshirish uchun
+for i in r:
+    print(i)  # Natija: 0, 1, 2, 3, 4
+```
+## Pickling va unpickling nima?
+- Pickling — bu Python obyekti iyerarxiyasini bayt oqimiga aylantirish jarayoni, unpickling esa uning teskari operatsiyasidir.
+
+```py
+import pickle
+
+data = {"ism": "Ali", "yosh": 25}
+# Pickling
+with open("data.pkl", "wb") as file:
+    pickle.dump(data, file)
+
+# Unpickling
+with open("data.pkl", "rb") as file:
+    yangi_data = pickle.load(file)
+print(yangi_data)
+```
