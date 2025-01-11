@@ -1,0 +1,248 @@
+---
+title: "Python Interview questions 17 dan 33 part 2"
+description: "Python intervyusida o‘zingizni boshqalardan ajratib ko‘rsatish uchun chuqur, qiziqarli savollar va javoblar!."
+date: 11-01-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+
+## Generators
+- Savol: Python’da generators` nima va u qanday ishlaydi?
+- Javob: `Generators` – bu iterator yaratishning oddiy usuli. Generators qiymatlarni kerak bo‘lganda hisoblaydi (lazy evaluation). Ular oddiy funksiya kabi ishlaydi, lekin qiymatlarni qaytarish uchun yield kalit so‘zidan foydalanadi.
+```python
+def my_generator():
+    for i in range(5):
+        yield i
+
+gen = my_generator()
+for value in gen:
+    print(value)
+```
+
+## __init__
+- Savol: Python’da `__init__` metodining vazifasi nima?
+- Javob: `__init__` – sinf konstruktoridir. U obyekt yaratilganda avtomatik chaqiriladi va obyekt xususiyatlarini belgilashga xizmat qiladi.
+```python
+class Car:
+    def __init__(self, model, color):
+        self.model = model
+        self.color = color
+
+car1 = Car("BMW", "qora")
+print(car1.model)  # Natija: BMW
+```
+
+## self
+- Savol: self` parametri nima va u qachon ishlatiladi?
+- Javob: `self` obyektning o‘zini ifodalaydi. Sinf ichida metodlar yoki o‘zgaruvchilarni murojaat qilish uchun `self` dan foydalaniladi.
+```python
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def greet(self):
+        return f"Salom, mening ismim {self.name}."
+
+person = Person("Jacob")
+print(person.greet())  # Natija: Salom, mening ismim Jacob.
+```
+## __str__
+- Savol: `__str__` metodining vazifasi nima?
+- Javob: `__str__` obyektni string ko‘rinishida ifodalash uchun ishlatiladi. Bu metod `print()` yoki `str()` funksiyalari chaqirilganda avtomatik ishlaydi.
+```python
+class Book:
+    def __init__(self, title, author):
+        self.title = title
+        self.author = author
+
+    def __str__(self):
+        return f"Kitob: {self.title}, Muallif: {self.author}"
+
+book = Book("Python Basics", "Jacob")
+print(book)  # Natija: Kitob: Python Basics, Muallif: Jacob
+```
+
+## append() va extend()
+- Savol: `append()` va `extend()` orasidagi farq nima?
+- Javob:
+- `append()` – bitta elementni ro‘yxat oxiriga qo‘shadi.
+- `extend()` – berilgan iterable (masalan, ro‘yxat) ichidagi elementlarni alohida-alohida ro‘yxatga qo‘shadi.
+```python
+numbers = [1, 2, 3]
+numbers.append([4, 5])
+print(numbers)  # Natija: [1, 2, 3, [4, 5]]
+
+numbers.extend([6, 7])
+print(numbers)  # Natija: [1, 2, 3, [4, 5], 6, 7]
+```
+
+## Docstring
+- Savol: `Docstring` nima va uning vazifasi qanday?
+- Javob: `Docstring` – funksiya, sinf yoki modul nima vazifa bajarishini izohlovchi matn. U uchta qo‘shtirnoq yordamida yoziladi va kodni tushunishni osonlashtiradi.
+```python
+def add_numbers(a, b):
+    """Ikki sonni qo‘shuvchi funksiya."""
+    return a + b
+
+print(add_numbers.__doc__)  # Natija: Ikki sonni qo‘shuvchi funksiya.
+```
+
+## Global va lokal o‘zgaruvchilar
+- Savol: `Global` va `lokal` o‘zgaruvchilar orasidagi farq nima?
+- Javob:
+- `Global` o‘zgaruvchilar – butun dastur davomida ishlatiladi.
+- `Lokal` o‘zgaruvchilar – faqat funksiya yoki blok ichida ishlatiladi.
+```python
+x = 10  # Global
+
+def example():
+    y = 5  # Lokal
+    return x + y
+
+print(example())  # Natija: 15
+```
+## pass operatori
+- Savol: `pass` operatorining vazifasi nima?
+- Javob: `pass` hech qanday amalni bajarmaydi. U vaqtinchalik kod tuzilmasini saqlab qolish uchun ishlatiladi.
+```python
+def my_function():
+    pass  # Keyinchalik kod yoziladi
+
+class MyClass:
+    pass  # Bo‘sh sinf
+```
+
+## == va is farqi
+- Savol: Python’da `==` va `is` operatorlari qanday farq qiladi?
+- Javob:
+- `==` – qiymatlarni tengligini tekshiradi.
+- `is` – obyektlarning xotira manzilini, ya'ni ularning identifikatorlarini solishtiradi.
+```python
+a = [1, 2, 3]
+b = [1, 2, 3]
+c = a
+
+print(a == b)  # Natija: True (Qiymatlar teng)
+print(a is b)  # Natija: False (Xotira manzillari har xil)
+print(a is c)  # Natija: True (Xuddi shu obyekt)
+```
+## Session nima?
+- Savol: Python’da session nima?
+- Javob: `Session` – bu bir nechta so‘rovlar davomida muayyan ma'lumotlarni saqlash imkonini beradigan mexanizm. U odatda veb-ilovalarda foydalanuvchi sessiyasini kuzatishda ishlatiladi.
+- Misol: `Flask` da sessiondan foydalanish:
+```python
+from flask import Flask, session
+
+app = Flask(__name__)
+app.secret_key = "secret"
+
+@app.route("/")
+def index():
+    session["username"] = "Jacob"
+    return "Session saqlandi!"
+```
+## break, continue, va pass farqi
+- Savol: `break`, `continue`, va `pass` qanday farq qiladi?
+- Javob:
+- `break` – tsiklni to‘xtatadi.
+- `continue` – joriy iteratsiyani o‘tkazib yuborib, keyingisiga o‘tadi.
+- `pass` – hech narsa qilmaydi, vaqtinchalik kod uchun ishlatiladi.
+```python
+for i in range(5):
+    if i == 2:
+        break  # Tsikl to'xtaydi
+    elif i == 1:
+        continue  # 1 ni o'tkazib yuboradi
+    else:
+        pass  # Harakat qilmaydi
+    print(i)  # Natija: 0
+```
+## *args va **kwargs
+- Savol: Python’da `*args` va `**kwargs` qanday ishlatiladi?
+- Javob:
+- `*args` – funksiyaga istalgan miqdorda pozitsion argumentlar uzatadi.
+- `**kwargs` – funksiyaga kalit-qiymat juftliklari sifatida argumentlarni uzatadi.
+```python
+def my_function(*args, **kwargs):
+    print("Args:", args)
+    print("Kwargs:", kwargs)
+
+my_function(1, 2, 3, name="Jacob", age=30)
+Natija:
+Args: (1, 2, 3)
+Kwargs: {'name': 'Jacob', 'age': 30}
+```
+## isinstance() va type() farqi
+- Savol: `isinstance()` va `type()` qanday farq qiladi?
+- Javob:
+- `isinstance()` – obyektning sinf yoki uning vorisi ekanligini tekshiradi.
+- `type()` – obyektning aniq turini qaytaradi.
+```python
+class Animal:
+    pass
+
+class Dog(Animal):
+    pass
+
+dog = Dog()
+
+print(isinstance(dog, Animal))  # True
+print(type(dog) == Animal)      # False
+```
+## .py va .pyc farqi
+- Savol: Python’da `.py` va `.pyc` fayllari o‘rtasidagi farq nima?
+- Javob:
+`.py` – dastur manba kodi yozilgan fayl.
+`.pyc` – Python kodining bayt kodga kompilyatsiya qilingan versiyasi, u tezroq ishlaydi.
+- Misol: Python dasturi ishga tushirilganda `.pyc` fayllari avtomatik yaratiladi.
+
+## __name__
+- Savol: Python’da __name__ o‘zgaruvchisining vazifasi nima?
+- Javob: `__name__` – bu ichki o‘zgaruvchi bo‘lib, modul qanday ishga tushirilganini aniqlashga yordam beradi:
+Agar modul bevosita ishga tushirilsa,`__name__` qiymati `"__main__"` bo‘ladi.
+Agar u `import` qilinsa, `__name__` modul nomiga teng bo‘ladi.
+```python
+# my_module.py
+if __name__ == "__main__":
+    print("Modul to‘g‘ridan-to‘g‘ri ishga tushirildi.")
+else:
+    print("Modul import qilindi.")
+```
+
+## Metaclasses
+- Savol: Python’da metaclasses nima?
+- Javob: `Metaclasses` – bu class larni yaratadigan class lardir. Ular class ning xatti-harakatlarini belgilaydi.
+```python
+class Meta(type):
+    def __new__(cls, name, bases, dct):
+        print(f"Yangi sinf yaratilmoqda: {name}")
+        return super().__new__(cls, name, bases, dct)
+
+class MyClass(metaclass=Meta):
+    pass
+```
+## Monkey patching
+- Savol: Python’da monkey patching nima?
+- Javob: `Monkey patching` – bu mavjud kodni runtime vaqtida o‘zgartirish usuli.
+```python
+class MyClass:
+    def greet(self):
+        return "Salom!"
+
+# Monkey patch
+def new_greet(self):
+    return "Yangi salom!"
+
+MyClass.greet = new_greet
+obj = MyClass()
+print(obj.greet())  # Natija: Yangi salom!
+```
+
+
+
+
