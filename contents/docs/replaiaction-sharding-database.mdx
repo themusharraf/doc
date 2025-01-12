@@ -1,0 +1,288 @@
+---
+title: "Katta Miqyosdagi Tizimlar Loyihalash. Asosiy Tamoyillar va Texnikalar"
+description: "Katta miqyosdagi tizimlar loyihalashtirishda muhim bo‘lgan ko‘plab texnologiyalar va usullar haqida batafsil tushuncha. Ushbu qo‘llanmada ma'lumotlarni nusxalash (replication)sharding, konfliktlarni hal qilish va ma'lumotlarni kengaytirish kabi fundamental konseptlar haqida so‘z boradi."
+date: 13-01-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+
+
+
+Katta miqyosdagi tizimlarni loyihalashda uchraydigan asosiy tushunchalarni hammaga tushunarli qilib batafsil tushuntiraman.
+
+## 1. Replication (Nusxalash)
+Nusxalash deganda, ma'lumotlarning bir nechta serverlarga ko'chirilishi tushuniladi. Bu tizim quyidagilarga imkon beradi:
+- Uzluksizlik: Agar bitta server ishlamay qolsa, boshqasi ma'lumotlarni uzatishni davom ettiradi.
+- Samaradorlik: Bir vaqtning o'zida ko'p foydalanuvchi o'qish so'rovlarini bajarishi mumkin.
+- Lekin nusxalash bilan muammo:
+Ma'lumotlar bir xilda yangilanmasa, eski ma'lumotlar bilan ishlash xavfi tug'iladi.
+
+## 2. Leader-Follower Replication
+Bu yondashuvda tizimda bitta `Leader` (rahbar) server bor, u ma'lumotlarga yozish bo'yicha javobgar. Follower (izdosh) serverlar esa faqat ma'lumotlarni nusxalab, o'qish so'rovlarini bajaradi.
+Qanday ishlaydi?
+- Foydalanuvchi ma'lumotni Leader serverga yozadi.
+`Follower` serverlar shu ma'lumotni nusxalaydi va o'qish uchun foydalanadi.
+- Afzalliklari:
+O'qish so'rovlarini tarqatib, yukni kamaytiradi.
+- Kamchiliklari:
+Agar `Leader` nosoz bo'lsa, tizim yozuvlarni qayta ishlay olmaydi.
+
+## 3. Leader-Leader Replication
+Bu tizimda bir nechta `Leader` serverlar mavjud. Har biri yozuv va o'qish operatsiyalarini bajaradi.
+- Qanday ishlaydi?
+Foydalanuvchi har qanday Leader serverga yozishi yoki o'qishi mumkin.
+- `Leader` serverlar o'zaro ma'lumotlarni sinxronlashtiradi.
+- Afzalliklari:
+Yozuv va o'qish operatsiyalarini ko'paytirish imkonini beradi.
+- Kamchiliklari:
+Bir vaqtning o'zida bir xil ma'lumot o'zgartirilsa, konflikt (qarama-qarshilik) yuzaga keladi.
+
+## 4. Async vs Sync Replications
+- Asinxron nusxalash `(Async)`:
+Ma'lumotlar bir vaqtning o'zida emas, keyinroq nusxalanadi.
+- Afzalliklari: Yozuv tezligi yuqori, tizim yuki kamroq.
+- Kamchiliklari: Ba'zan eski ma'lumotlar bilan ishlashga to'g'ri kelishi mumkin.
+- Sinxron nusxalash `(Sync)`:
+Ma'lumotlar real vaqt rejimida nusxalanadi.
+- Afzalliklari: Barcha serverlarda ma'lumot yangiligi kafolatlanadi.
+- Kamchiliklari: Tizim tezligi pastroq bo'lishi mumkin.
+
+## 5. Scaling Writes (Yozuvlarni kengaytirish)
+Tizim bir vaqtning o'zida ko'p yozuvlarni boshqarishi kerak bo'lsa, quyidagi yondashuvlar qo'llaniladi:
+- `Leader-Leader modeli:` Bir nechta rahbar serverlar orqali yozuvlarni boshqarish.
+- `Sharding:` Ma'lumotlarni bo'laklarga ajratish orqali tizim yukini pasaytirish.
+
+## 6. Conflict Resolution Mechanisms (Konfliktlarni hal qilish)
+Bir nechta serverlar ma'lumotlarni boshqarayotganda, konfliktlar yuzaga kelishi mumkin.
+- Qanday hal qilinadi?
+- Last Write Wins: Oxirgi yozilgan ma'lumot qabul qilinadi.
+- `Timestamp Comparison:` Ma'lumotlarning vaqt belgisiga qarab, eng yangi ma'lumot saqlanadi.
+- `Custom Logic:` Maxsus biznes qoidalari bo'yicha hal qilinadi.
+
+## 7. Sharding
+`Sharding` — bu ma'lumotlar bazasini bo'laklarga ajratish texnikasi.
+- Misol:
+Tasavvur qiling, sizda katta foydalanuvchilar ro'yxati bor. Ularni alifbo bo'yicha bo'lib chiqib, har bir guruhni alohida serverga joylashtirasiz:
+- `A-M` harflari uchun bir server.
+- `N-Z` harflari uchun boshqa server.
+- Afzalliklari:
+Tizimning samaradorligini oshiradi.
+Kamchiliklari:
+Bo'laklar orasida tranzaktsiyalarni boshqarish murakkab.
+
+## 8. Shard Keys (Shard kalitlari)
+- `Shard` kaliti — ma'lumotlarni qaysi bo'lakka joylashtirishni aniqlovchi kalit.
+- Yaxshi shard kalit qanday bo'ladi?
+Ma'lumotlarni teng taqsimlaydi.
+Bo'laklarning ortiqcha yuklanishiga yo'l qo'ymaydi.
+
+## 9. SQL vs NoSQL Sharding
+- SQL Sharding:
+Relatsion ma'lumotlar bazalarida shardingni amalga oshirish murakkabroq, chunki ular tranzaktsiyalar va izchillikni talab qiladi.
+- NoSQL Sharding:
+`MongoDB` yoki `Cassandra` kabi `NoSQL` tizimlar shardingni tabiiy ravishda qo'llab-quvvatlaydi va tezroq ishlaydi.
+
+## Xulosa
+- Katta tizimlarni loyihalashda asosiy qiyinchiliklar:
+- `Nusxalash orqali tizimning uzluksizligini ta'minlash.`
+- `Konfliktlarni boshqarib, ma'lumotlarning yangiligi va izchilligini saqlash.`
+- `Sharding orqali tizimni kengaytirish.`
+- `Tizimda yozuv va o'qish operatsiyalarining tezligini optimallashtirish.`
+
+## Code misollari bilan tushuntirib beraman. Quyidagi bo‘limlarga mos kodlar keltirilgan:
+## 1. Replication (Nusxalash)
+- Python'da nusxalashni modellashtirish
+```python
+class DatabaseServer:
+    def __init__(self, name):
+        self.name = name
+        self.data = {}
+
+    def write(self, key, value):
+        self.data[key] = value
+        print(f"{self.name}: {key} -> {value} yozildi.")
+
+    def read(self, key):
+        return self.data.get(key, "Ma'lumot topilmadi!")
+
+# Leader va follower serverlarini yaratamiz
+leader = DatabaseServer("Leader")
+follower = DatabaseServer("Follower")
+
+# Nusxalash funksiyasi
+def replicate(leader, follower, key, value):
+    leader.write(key, value)
+    follower.write(key, value)
+
+# Ma'lumotni yozamiz va nusxalaymiz
+replicate(leader, follower, "user_1", "Alice")
+print(follower.read("user_1"))  # Nusxalangan ma'lumotni o'qish
+```
+## 2. Leader-Follower Replication
+- Ma'lumotlarni follower serverlarga nusxalash
+```python
+class LeaderFollowerReplication:
+    def __init__(self):
+        self.leader = {}
+        self.followers = []
+
+    def add_follower(self, follower):
+        self.followers.append(follower)
+
+    def write(self, key, value):
+        self.leader[key] = value
+        for follower in self.followers:
+            follower[key] = value
+        print(f"Leader: {key} -> {value} yozildi.")
+
+    def read_from_follower(self, follower, key):
+        return follower.get(key, "Ma'lumot topilmadi!")
+
+# Leader va follower'lar
+replication = LeaderFollowerReplication()
+follower1 = {}
+follower2 = {}
+
+replication.add_follower(follower1)
+replication.add_follower(follower2)
+
+# Yozish
+replication.write("user_2", "Bob")
+print(replication.read_from_follower(follower1, "user_2"))  # Bob
+```
+## 3. Leader-Leader Replication
+- Konfliktlarni boshqarish bilan ikki tomonlama nusxalash
+```python
+class LeaderLeaderReplication:
+    def __init__(self):
+        self.server_a = {}
+        self.server_b = {}
+
+    def write_to_a(self, key, value):
+        self.server_a[key] = value
+        self.server_b[key] = value
+
+    def write_to_b(self, key, value):
+        self.server_b[key] = value
+        self.server_a[key] = value
+
+    def resolve_conflict(self, key):
+        if key in self.server_a and key in self.server_b:
+            return f"Conflict resolved: {self.server_a[key]}"
+        return "No conflict."
+
+# Serverlar
+replication = LeaderLeaderReplication()
+replication.write_to_a("user_3", "Charlie")
+replication.write_to_b("user_3", "David")
+print(replication.resolve_conflict("user_3"))
+```
+## 4. Async vs Sync Replications
+- Asinxron nusxalash
+```python
+import time
+
+def async_replicate(leader, follower, key, value):
+    leader[key] = value
+    time.sleep(1)  # Kechikish
+    follower[key] = value
+    print(f"Leader: {key} -> {value}, keyin follower'ga ko'chirildi.")
+
+leader_db = {}
+follower_db = {}
+
+async_replicate(leader_db, follower_db, "user_4", "Eve")
+print(follower_db)  # {'user_4': 'Eve'}
+```
+## 5. Scaling Writes
+- Yozuvni sharding orqali kengaytirish
+```python
+class Shard:
+    def __init__(self, name):
+        self.name = name
+        self.data = {}
+
+    def write(self, key, value):
+        self.data[key] = value
+        print(f"{self.name}: {key} -> {value} yozildi.")
+
+# Shard kaliti funksiyasi
+def get_shard(key):
+    return hash(key) % len(shards)
+
+# Shardlarni yaratamiz
+shards = [Shard("Shard1"), Shard("Shard2")]
+
+# Ma'lumotlarni sharding bo'yicha yozamiz
+key = "user_5"
+value = "Frank"
+selected_shard = shards[get_shard(key)]
+selected_shard.write(key, value)
+```
+## 6. Conflict Resolution Mechanisms
+- So‘nggi yozuv ustuvorligi
+```python
+data_store = {}
+
+def resolve_conflict(key, value1, value2, timestamp1, timestamp2):
+    if timestamp1 > timestamp2:
+        data_store[key] = value1
+    else:
+        data_store[key] = value2
+    print(f"{key} uchun konflikt hal qilindi.")
+
+resolve_conflict("user_6", "Alice", "Bob", 1678900000, 1678910000)
+print(data_store)
+```
+## 7. Sharding
+- Oddiy sharding misoli
+```
+class DatabaseShard:
+    def __init__(self, name):
+        self.name = name
+        self.data = {}
+
+    def add(self, key, value):
+        self.data[key] = value
+        print(f"{self.name}: {key} -> {value} qo'shildi.")
+
+# Shard'larni yaratish
+shard1 = DatabaseShard("Shard1")
+shard2 = DatabaseShard("Shard2")
+
+# Shard tanlash
+def get_shard(key):
+    return shard1 if key.startswith("A") else shard2
+
+# Ma'lumot qo'shish
+shard = get_shard("Alice")
+shard.add("Alice", "Data for Alice")
+```
+## 8. Shard Keys
+- Tizimli shard kaliti
+```python
+def shard_key(key):
+    return hash(key) % 2  # Bo'laklarni 2 ta serverga taqsimlash
+
+data_shards = [shard1, shard2]
+
+key = "Bob"
+shard_index = shard_key(key)
+data_shards[shard_index].add(key, "Data for Bob")
+```
+## 9. SQL vs NoSQL Sharding
+- MongoDB da sharding misoli (NoSQL)
+```javascript
+use myDatabase
+sh.enableSharding("myDatabase")
+db.createCollection("users")
+db.users.createIndex({ user_id: 1 })
+sh.shardCollection("myDatabase.users", { user_id: 1 })
+```
+Agar kodlarning har bir qismini tushuntirish yoki ularga tegishli kengaytmalarni xohlasangiz, yozib qoldiring! [Author](https://t.me/Musharraaf)
+
