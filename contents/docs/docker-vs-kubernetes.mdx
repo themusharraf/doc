@@ -1,0 +1,50 @@
+---
+title: "Docker va Kubernetes haqida va ularning ikkalasi o'rtasidagi farqlar"
+description: "Docker va Kubernetes dasturlarni boshqarish va ishga tushirishda muhim vositalar bo'lib, ular bir-biridan farq qiluvchi maqsadlarga xizmat qiladi. Keling, ularning vazifalari va qanday ishlashini tahlil qilib chiqamiz."
+date: 16-01-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+
+## Docker nima?
+- `Docker` — bu konteynerlarni yaratish va ishga tushirishga yordam beruvchi vosita. Konteynerlar dastur ishlashi uchun kerak bo'lgan barcha qismlarni (kod, kutubxonalar va tizim vositalari) o'z ichiga olgan kichik paketlar hisoblanadi. Docker yordamida dasturingizni kompyuteringizda sinab ko'rib, keyin uni istalgan joyda ishga tushirishingiz mumkin.
+- Misol uchun, agar siz veb-ilova yaratayotgan bo'lsangiz, Docker yordamida veb-server, dastur kodi va boshqa kerakli komponentlarni o'z ichiga olgan konteyner yaratasiz. Bu konteynerni boshqa muhitga, masalan, bulut serveriga o'tkazib, xuddi kompyuteringizdagidek ishga tushirishingiz mumkin.
+
+## Kubernetes nima?
+- `Kubernetes (yoki qisqacha K8s)` ko'plab konteynerlarni boshqarishda yordam beradi. Bu tizim konteynerlarni katta miqyosda boshqarish va ularni o'zaro uyg'un ishlashini ta'minlash uchun ishlatiladi.
+Tasavvur qiling, sizda to'lovlarni boshqarish, inventarizatsiyani nazorat qilish va buyurtmalarni qayta ishlash uchun xizmatlardan iborat e-tijorat sayti mavjud. Har bir xizmat o'z konteynerida ishlaydi. Kubernetes ushbu konteynerlarning o'zaro ishlashini boshqaradi, kerak bo'lganda ularni kengaytiradi yoki kamaytiradi va bir nechta serverlarda barqaror ishlashini ta'minlaydi.
+
+## Docker va Kubernetes qanday hamkorlik qiladi?
+- `Docker va Kubernetes` ko'pincha birga ishlatiladi, ammo ular har xil vazifalarni bajaradi:
+- `Docker` konteynerlarni yaratish va boshqarish uchun ishlatiladi.
+- `Kubernetes` esa bu konteynerlarni tizimli ravishda boshqaradi.
+## Oddiy tushuncha:
+- Dasturchilar Docker yordamida konteynerlarni yaratib, sinovdan o'tkazishadi.
+- Docker tasvirlari (image) tayyor bo'lgach, ular Kubernetes klasteriga joylashtiriladi. Kubernetes bu konteynerlarni boshqarishni o'z zimmasiga oladi.
+
+## Asosiy farqlar
+- Maqsad:
+- `Docker` konteynerlarni yaratish va ishga tushirish uchun ishlatiladi.
+- `Kubernetes` esa ushbu konteynerlarni katta tizimda boshqarish va tartibga solish uchun.
+
+## Amallar:
+- Docker’da `docker build` yordamida tasvir yaratiladi, `docker run` bilan konteyner ishga tushiriladi.
+- Kubernetes esa konteynerlarni klasterda ishlatish va ularga kerakli resurslarni taqdim etish bilan shug'ullanadi.
+
+## Foyda taraflari:
+- `Docker` dasturchilar uchun barqaror muhit yaratishga yordam beradi.
+- `Kubernetes` esa ko'p serverli kompleks dasturlarni boshqarishni osonlashtiradi.
+
+## Qachon qaysi birini ishlatish kerak?
+- `Docker:` Agar dastur ishlab chiqayotgan yoki sinovdan o'tkazayotgan bo'lsangiz, Docker ideal vositadir.
+- `Kubernetes:` Agar dastur katta miqyosda ishga tushirilayotgan bo'lsa va barqarorlik talab qilinsa, Kubernetes ishlatiladi.
+
+## Yakuniy xulosa
+- `Docker` konteynerlar yaratish va ishga tushirishda yordam beradi, `Kubernetes` esa ularni katta tizimda boshqaradi. Ikkisi birgalikda murakkab dasturlarni yaratish, joylashtirish va boshqarishni osonlashtiradi.
+
+- Agar oddiy konteynerni ishga tushirishni xohlasangiz, Kubernetes juda murakkab bo'lishi mumkin. Bunday holatda, masalan, `sliplane.io` kabi boshqariladigan konteyner platformalaridan foydalanish qulayroqdir. Ular orkestratsiyani o'z zimmasiga oladi va sizni faqat dastur yetkazib berishga e'tibor qaratishingizga imkon beradi.
