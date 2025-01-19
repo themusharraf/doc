@@ -1,0 +1,143 @@
+---
+title: "SQLda Relationships: One-to-One, One-to-Many, Many-to-Many haqida"
+description: "Relatsion ma'lumotlar bazasida munosabatlar table dagi ma'lumotlar qanday bog'langanligini aniqlaydi. SQLda uchta asosiy munosabat turi mavjud: birga-bir, birga-ko‘p, va ko‘pga-ko‘p."
+date: 19-01-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+
+Relationships in SQL - One-to-One, One-to-Many, Many-to-Many
+## 1. Birga-bir munosabat (One-to-One)
+
+Birga-bir munosabatda, `A` jadvaldagi har bir qator `B` jadvaldagi faqat bitta qatorga bog'lanadi, va aksincha. Bu ma'lumotlarni bo‘lish va yaxshi tashkil qilish uchun ishlatiladi.
+## Misol: Talabalar va profillar
+Bizda ikkita jadval mavjud: `students` va `student_profiles`. Har bir talabaning faqat bitta profili bor va har bir profil faqat bitta talabaga tegishli.
+
+```sql
+-- Talabalar jadvallari
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Talaba profillari
+CREATE TABLE student_profiles (
+    id SERIAL PRIMARY KEY,
+    student_id INT UNIQUE REFERENCES students(id) ON DELETE CASCADE,
+    bio TEXT
+);
+```
+- `students` jadvali talabaning umumiy ma'lumotlarini saqlaydi.
+- `student_profiles` jadvali esa talaba haqidagi qo‘shimcha ma’lumotlarni saqlaydi.
+
+## Ma'lumot qo‘shish va query:
+```sql
+-- Ma'lumot qo‘shish
+INSERT INTO students (name) VALUES ('John'), ('Alice');
+INSERT INTO student_profiles (student_id, bio) VALUES
+(1, 'Johnning biografiyasi'),
+(2, 'Alicening biografiyasi');
+
+-- Ma'lumotni ko'rish
+SELECT s.name, sp.bio
+FROM students s
+JOIN student_profiles sp ON s.id = sp.student_id;
+```
+## 2. Birga-ko‘p munosabat (One-to-Many)
+
+- `Birga-ko‘p` munosabatda, `A` jadvaldagi bir qator `B` jadvaldagi bir nechta qatorga bog‘lanishi mumkin. Bu odatda ierarxik ma’lumotlar uchun ishlatiladi.
+
+## Misol: Mijozlar va buyurtmalar
+Bizda ikkita jadval mavjud: `customers` va `orders`. Har bir mijoz bir nechta buyurtma berishi mumkin, lekin har bir buyurtma faqat bitta mijozga tegishli.
+```sql
+-- Mijozlar jadvali
+CREATE TABLE customers (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Buyurtmalar jadvali
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    customer_id INT REFERENCES customers(id) ON DELETE CASCADE,
+    order_date DATE NOT NULL
+);
+```
+- `customers` jadvali mijozning umumiy ma'lumotlarini saqlaydi.
+- `orders` jadvali har bir buyurtmani saqlaydi va `customer_id` orqali bog‘lanadi.
+
+## Ma'lumot qo‘shish va query:
+```sql
+-- Ma'lumot qo‘shish
+INSERT INTO customers (name) VALUES ('John'), ('Alice');
+INSERT INTO orders (customer_id, order_date) VALUES
+(1, '2025-01-10'),
+(1, '2025-01-11'),
+(2, '2025-01-12');
+
+-- Ma'lumotni ko‘rish
+SELECT c.name AS customer, o.order_date
+FROM customers c
+JOIN orders o ON c.id = o.customer_id;
+```
+
+## 3. Ko‘pga-ko‘p munosabat (Many-to-Many)
+
+- `Ko‘pga-ko‘p` munosabatda, `A` jadvaldagi qatorlar `B` jadvaldagi bir nechta qatorlar bilan bog‘lanishi mumkin va aksincha. Bunday munosabat uchun `o‘rta jadval (junction table)` ishlatiladi.
+## Misol: Talabalar va kurslar
+Bizda ikkita jadval mavjud: `students` va `courses`. Talaba bir nechta kursda qatnashishi mumkin, va bir kursda bir nechta talaba bo‘lishi mumkin.
+```sql
+-- Talabalar jadvali
+CREATE TABLE students (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+-- Kurslar jadvali
+CREATE TABLE courses (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL
+);
+
+-- O‘rta jadval (student_courses)
+CREATE TABLE student_courses (
+    student_id INT REFERENCES students(id) ON DELETE CASCADE,
+    course_id INT REFERENCES courses(id) ON DELETE CASCADE,
+    PRIMARY KEY (student_id, course_id)
+);
+```
+- `students` talaba haqidagi ma'lumotlarni saqlaydi.
+- `courses` kurslar haqidagi ma'lumotlarni saqlaydi.
+- `student_courses` jadvali talabalar va kurslar o'rtasidagi bog'lanishni saqlaydi.
+## Ma'lumot qo‘shish va query:
+```sql
+-- Ma'lumot qo‘shish
+INSERT INTO students (name) VALUES ('John'), ('Alice');
+INSERT INTO courses (title) VALUES ('Matematika'), ('Fizika');
+INSERT INTO student_courses (student_id, course_id) VALUES
+(1, 1), (1, 2), (2, 2);
+
+-- Ma'lumotni ko‘rish
+SELECT s.name AS student, c.title AS course
+FROM students s
+JOIN student_courses sc ON s.id = sc.student_id
+JOIN courses c ON c.id = sc.course_id;
+```
+
+## Misol
+- `Birga-bir`	`A` jadvalidagi har bir qator faqat `B` jadvalidagi bitta qatorga bog‘lanadi.	`Students ↔ Profiles`
+- `Birga-ko‘p`	`A` jadvalidagi bitta qator `B` jadvalidagi bir nechta qatorga bog‘lanadi.	`Customers → Orders`
+- `Ko‘pga-ko‘p`	`A va B` jadval qatorlari o‘rta jadval orqali bog‘lanadi.`Students ↔ Course`
+
+Bu munosabatlar ma'lumotlarni samarali saqlash va ularni oson boshqarishga yordam beradi.
+
+
+
+
+
+
