@@ -1,0 +1,379 @@
+---
+title: "Instagram Arxitekturasi: API Gateway, CDN,Elasticsearch, va Mikroservislar Orqali Yuqori Samaradorlikni Ta'minlash"
+description: "Instagram, foydalanuvchilarni eng samarali qidirish imkoniyatlari bilan ta'minlash uchun API Gateway, CDN,Elasticsearch tizimidan foydalanadi."
+date: 21-01-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+## Instagram tizimi dizayni
+
+- `Instagram` - bu iPhone va Android-da mavjud bo'lgan bepul rasm va video
+almashish ilovasi.Shuningdek, ular Instagram’dagi do‘stlari tomonidan
+baham ko‘rilgan postlarni ko‘rishlari, sharhlashlari va yoqtirishlari mumkin.
+
+## Funktsional talab
+
+1. `Rasm/videoni yuklash`
+
+Foydalanuvchilar mobil qurilmalardan rasm va video yuklashi mumkin.
+Yuklanadigan fayllar maksimal o'lchami cheklangan bo'lishi kerak (masalan, 10MB rasm, 100MB video).
+Tizim avtomatik ravishda fayllarni optimallashtirishi va turli ekran o'lchamlariga moslashtirishi kerak.
+Foydalanuvchilar yuklangan rasmlarga tavsif (caption) qo'shish imkoniyatiga ega bo'lishi kerak.
+
+2. `Yoqtirishlar va sharhlar`
+
+Foydalanuvchilar rasmlarga layk qo'yishi va sharh qoldirishi mumkin.
+Layklar soni va sharhlar tasvir ostida ko'rsatilishi kerak.
+Foydalanuvchi o'z rasmlariga yoqqan yoki sharhlanganda bildirishnoma olishi kerak.
+Sharhlar uchun quyidagi imkoniyatlar bo'lishi kerak:
+- Sharhni tahrirlash
+- Sharhni o'chirish
+- Sharhlarga javob qaytarish
+Layk va sharhlar haqidagi statistik ma'lumotlar foydalanuvchi profilida aks ettirilishi kerak.
+
+3. `Kuzatish`
+
+Foydalanuvchilar boshqa foydalanuvchilarni kuzatishi mumkin.
+Kuzatish tugmachasi har bir foydalanuvchi profilida mavjud bo'lishi kerak.
+Kuzatilgan foydalanuvchilarning postlari yangiliklar tasmasida aks ettirilishi kerak.
+Foydalanuvchi kuzatilganda yoki yangi kuzatuvchi qo'shilganda bildirishnoma olishi kerak.
+Kuzatish va kuzatuvchilar soni foydalanuvchi profilida ko'rsatilishi kerak.
+
+4. `Yangiliklar tasmasi`
+
+Tizim foydalanuvchilarga yangiliklar tasmasini taqdim etishi kerak.
+Yangiliklar tasmasi dolzarblik va yangilik bo'yicha saralanishi kerak.
+Har bir yangilik posti quyidagi ma'lumotlarni o'z ichiga olishi kerak:
+- Foydalanuvchi nomi va profili
+- Rasm yoki video
+- Tavsif (caption)
+- Layklar va sharhlar soni
+
+Yangiliklar tasmasida quyidagi filtr imkoniyatlari bo'lishi kerak:
+
+- Eng mashhur postlar
+- Eng so'nggi postlar
+- Faqat kuzatilayotgan foydalanuvchilarning postlari
+
+Tizim foydalanuvchilarga qulay interfeys taqdim etishi va yuklanish tezligi yuqori bo'lishini ta'minlashi kerak.
+
+## Funktsional bo'lmagan talablar:
+
+1. `Yuqori darajada kengaytiriladigan`
+
+Instagram milliardlab foydalanuvchilarga ega bo'lgani uchun tizim doimiy ravishda kengaytirishga tayyor bo'lishi kerak. Bu shuni anglatadiki, serverlar, saqlash va tarmoq infratuzilmasi o'sib boruvchi yukni qo'llab-quvvatlay olishi kerak.
+
+2. `Muvaffaqiyatsizlik/Muvaffaqiyatsizliklarga chidamlilik`
+
+Tizim muammolarni minimallashtirish va uzluksiz xizmat ko'rsatishni ta'minlash uchun zaxira mexanizmlariga ega bo'lishi kerak. Masalan, ma'lumotlar markazlari orasidagi avtomatik ko'chirish va uzilishlarni kamaytirish uchun distributiv kesh mexanizmlari ishlatiladi.
+
+3. `Mustahkamlik va yakuniy izchillik`
+
+Foydalanuvchilar ma'lumotlari doimo yangilanib, izchil holatda saqlanishi kerak. CAP teoremasi nuqtai nazaridan, Instagram moslashuvchan izchillik va mavjudlikni muvozanatlash uchun optimal yondashuvni tanlaydi.
+
+4. `Minimal kechikish`
+
+Foydalanuvchilarga iloji boricha tezkor javob berish kerak. Serverlar global miqyosda joylashtirilishi, CDN (Content Delivery Network) ishlatilishi va optimallashgan so'rov jarayonlari bo'lishi lozim.
+
+
+## Asosiy nuqtalar:
+
+1. `Qanday foydalanuvchi?`
+
+
+2. `Qanday qurilmalar ishlatiladi?`
+
+
+3. `Rasm formati va o'lchami qanday?`
+
+## Back of the Envelope Estimation
+
+`RPS/QPS (Request per Second / Queries per Second):`
+
+- Oylik 2 milliard foydalanuvchi hisobida, kunlik faol foydalanuvchilar soni: 70 million.
+
+- O'rtacha RPS: ~2.08 million so'rov/soniya.
+
+- Eng yuqori yuk: ~5.21 million so'rov/soniya.
+
+- Minimal yuk: ~1.04 million so'rov/soniya.
+
+`Saqlash hajmi:`
+
+- 50% foydalanuvchilar oyiga 3 marta post joylashtirsa: kuniga 100 million post.
+
+- Har bir foydalanuvchi 200 ta postga ega bo'lishi mumkin, bu jami 200 milliard post.
+
+- Postlar va metadata uchun 400TB saqlash zarur.
+
+- Hikoyalar uchun jami 200TB (100B stories).
+
+- Tasvir hajmi: 10MB, kuniga 10 tasvir yuklansa, yiliga 1.5PB saqlash zarur.
+
+`Baza ma'lumotlari hajmi:`
+
+- 200 ta izoh va 50 ta layk har bir post uchun.
+
+- Har bir layk/izoh uchun metadata 25 bayt, bu esa 1 million faol layklar uchun 25MB/s ni tashkil qiladi.
+
+`Kesh hajmi:`
+
+- Tez-tez kiriladigan ma'lumotlar uchun 312TB kesh talab qilinadi.
+
+- Kesh profil ma'lumotlari, kuzatuvchilar ro'yxati va boshqa ma'lumotlarni saqlaydi.
+
+`Hisoblash resurslari:`
+
+- 10,000 tarmoq orqali yuklanadigan fayl, har biri uchun 1 ip-oqim.
+
+- 1 serverda 32 yadro, jami 3125 server zarur.
+
+`Tarmoq o'tkazuvchanligi:`
+
+- O'rtacha tasvir yuklash vaqti 5 soniya.
+
+- 10,000 bir vaqtning o'zida yuklash, maksimal 50Gbps o'tkazuvchanlik talab qiladi.
+
+## Ma'lumotlar bazasi sxemasi
+
+### Users
+```sql
+CREATE TABLE Users (
+    UserId VARCHAR PRIMARY KEY,
+    Username VARCHAR NOT NULL,
+    email VARCHAR NOT NULL,
+    password VARCHAR NOT NULL,
+    fullname VARCHAR,
+    bio VARCHAR,
+    profPicUrl VARCHAR,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Posts
+```sql
+CREATE TABLE Posts (
+    postId VARCHAR PRIMARY KEY,
+    userId VARCHAR NOT NULL,
+    imageUrl VARCHAR,
+    caption VARCHAR,
+    fullname VARCHAR,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userId) REFERENCES Users(UserId)
+);
+```
+
+### Comments
+```sql
+CREATE TABLE Comments (
+    comId VARCHAR PRIMARY KEY,
+    postId VARCHAR NOT NULL,
+    userId VARCHAR NOT NULL,
+    commTxt VARCHAR,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES Posts(postId),
+    FOREIGN KEY (userId) REFERENCES Users(UserId)
+);
+```
+
+### Likes
+```sql
+CREATE TABLE Likes (
+    likeId VARCHAR PRIMARY KEY,
+    postId VARCHAR NOT NULL,
+    userId VARCHAR NOT NULL,
+    caption VARCHAR,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (postId) REFERENCES Posts(postId),
+    FOREIGN KEY (userId) REFERENCES Users(UserId)
+);
+```
+
+### Follower
+```sql
+CREATE TABLE Follower (
+    followId INT,
+    folWeeId INT,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (followId) REFERENCES Users(UserId),
+    FOREIGN KEY (folWeeId) REFERENCES Users(UserId)
+);
+```
+
+### Tag
+```sql
+CREATE TABLE Tag (
+    tagId VARCHAR PRIMARY KEY,
+    tagName VARCHAR
+);
+```
+
+### Post Tag
+```sql
+CREATE TABLE Post_Tag (
+    postId VARCHAR,
+    tagId VARCHAR,
+    PRIMARY KEY (postId, tagId),
+    FOREIGN KEY (postId) REFERENCES Posts(postId),
+    FOREIGN KEY (tagId) REFERENCES Tag(tagId)
+);
+```
+
+`Ma'lumotlar bazalari:`ularning tabiati va talablariga mos keladigan turli xil ma'lumotlar bazalarida saqlanadigan turli xil ma'lumotlar.
+Foydalanuvchi ma'lumotlari `SQL yoki PostgreSQL` ma'lumotlar bazasi kabi har qanday `relyatsion` ma'lumotlar bazalarida saqlanadi.
+Xuddi shunday, yoqtirishlar va sharhlar haqida gap ketganda, ular odatda grafik ma'lumotlar bazasida `(Neo4j)` saqlanadi.
+Grafik ma'lumotlar bazasiga ega bo'lishning sababi uning `users, posts, subscribers` kabi ma'lumotlar ob'ektlari
+va ularning comments tugun sifatida va grafik qirralari sifatidagi munosabatlar o'rtasidagi murakkab bog'liqlikdir.
+Foydalanuvchi tasmasi, faoliyati va hisoblagichlari kabi ma'lumotlarni saqlash uchun `Cassandra` kabi alohida ustunli ma'lumotlar bazasi ishlatiladi.
+
+
+## Instagram tezkor qidiruv tizimi
+
+Instagramning tezkor va kengaytiriladigan qidiruv tizimini yaratish uchun Elasticsearch'ga qo'shilgan indekslar va tuzilmalarning maqsadi,
+foydalanuvchilarning tez va samarali qidiruv qilish imkoniyatlarini ta'minlashdir. Bu ma'lumotlar bazasidagi
+turli ma'lumotlarni indekslash orqali qidiruv jarayonini tezlashtiradi va platforma samaradorligini oshiradi.
+
+## Elasticsearch Indekslari:
+
+```sql
+CREATE INDEX idx_users_username ON Users(foydalanuvchi nomi);
+INDEX CREATE idx_posts_user_id ON Posts(user_id);
+CREATE INDEX idx_comments_post_id ON Comments(post_id);
+INDEX CREATE idx_likes_post_id ON Likes(post_id);
+CREATE INDEX idx_followers_follower_id ON Followers(follower_id);
+```
+
+- `Users` uchun indeks
+Foydalanuvchilarning username (foydalanuvchi nomi) bo'yicha qidiruvni tezlashtirish.
+
+- `Posts` uchun indeks
+Postlar foydalanuvchilari bo'yicha indekslash, bu orqali foydalanuvchining barcha postlari tez topiladi.
+
+- `Comments` uchun indeks
+Izohlar post ID'siga asoslanib indekslanadi, bu orqali qidiruvda postga oid izohlarni tez topish imkonini beradi.
+
+- `Likes` uchun indeks
+Postlarning yoqtirishlarini post ID bo'yicha tez qidirish imkonini beradi.
+
+- `Followers` uchun indeks
+Foydalanuvchining kuzatuvchilari bilan bog'liq ma'lumotlarni tez topish imkoniyatini yaratadi.
+
+### Elasticsearch tuzilmasi:
+- Indeks: o'xshash xususiyatlarga ega bo'lgan hujjatlar to'plami.
+- Hujjat: JSON formatidagi bitta element.
+- Maydon: Hujjat ichidagi kalit-qiymat juftligi.
+
+`PUT /users:`
+- Instagram foydalanuvchilarining ma'lumotlari quyidagi shaklda saqlanadi:
+
+```json
+PUT /users
+{
+   "mappings": {
+      "properties": {
+          "user_id": { "type": "keyword" },
+          "foydalanuvchi nomi": { "type": "text" },
+          "elektron pochta": { "type": "keyword" },
+          "to'liq_ism": { "type": "text" },
+          "bio": { "type": "text" },
+          "profile_picture_url": { "type": "keyword" },
+          "yaratilgan_at": { "type": "date" }
+       }
+    }
+}
+```
+### CDN (Content Delivery Network) orqali saqlangan malumotlar:
+- Instagram `CDN-`lardan foydalangan holda turli xil kontentlarni saqlash va tez yetkazib berishni ta'minlaydi, shu jumladan:
+1. Rasmlar
+2. Videolar
+3. Foydalanuvchi profili rasmlari
+4. Hikoyalar
+5. Eskizlar
+6. Statik aktivlar (JavaScript, CSS fayllari)
+
+Instagram REST API
+
+Instagram foydalanuvchilari uchun qulay interfeys yaratish maqsadida RESTful API yoki GraphQL yordamida malumotlarga kirish mumkin. Quyida Instagram REST API uchun bazi umumiy songgi nuqtalar keltirilgan:
+## Foydalanuvchilar
+```python
+GET: https://graph.instagram.com/me?fields=id,username,account_type,media_count&access_token=ACCESS_TOKEN
+GET: https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp&access_token=ACCESS_TOKEN
+Ushbu nuqta orqali foydalanuvchi haqida malumotlarni olish mumkin.
+```
+
+Foydalanuvchining mediatini olish uchun foydalaniladi.
+```python
+Media
+GET: https://graph.instagram.com/{media-id}?fields=id,media_type,media_url,username,timestamp&access_token=ACCESS_TOKEN
+Muayyan media elementining tafsilotlarini olish.
+POST: https://graph.instagram.com/{media-id}?fields=id,media_type,media_url,username,timestamp&access_token=ACCESS_TOKEN
+Media bilan bog‘liq malumotlarni yangilash uchun.
+Izohlar
+
+GET: https://graph.instagram.com/{media-id}/comments?access_token=ACCESS_TOKEN
+Muayyan media boyicha izohlarni olish.
+POST: https://graph.instagram.com/{media-id}/comments
+Izoh qo‘shish:
+
+Kontent turi: application/json
+{
+  "message": "Izohingiz matni shu yerda",
+  "access_token": "ACCESS_TOKEN"
+}
+
+DELETE: https://graph.instagram.com/{comment-id}?access_token=ACCESS_TOKEN
+delete comments.
+
+Foydalanuvchini Kuzatish
+POST: https://graph.instagram.com/user/{user_id}/follow
+
+Boshqa foydalanuvchini kuzatish uchun.
+POST: https://graph.instagram.com/image/{imageid}/like
+
+Muayyan rasmni yoqtirish.
+Yangilangan Tasmani Olish
+GET: https://graph.instagram.com/feed
+Foydalanuvchilarning yangilangan tasmasini olish.
+```
+
+Instagram platformasining kuchli va tezkor `API` nuqtalari yordamida ilovalar va web-interfeyslar Instagram xususiyatlariga oson kirish imkonini yaratadi.
+Har bir songgi nuqta foydalanuvchilarga kerakli malumotlarni olish va yangilash jarayonlarini tezlashtiradi.
+
+## Instagram Mikroservis Arxitekturasi: Xizmatlar, API Gateway va CDN
+
+Instagram ilovasi samarali ishlashini ta'minlash uchun mikroservis arxitekturasidan foydalanadi. Bunda har bir xizmat mustaqil ravishda ishlaydi, bu esa tizimni kengaytirish va boshqarishni osonlashtiradi. Quyida Instagram arxitekturasining asosiy komponentlari va ularning ishlash prinsiplari keltirilgan.
+
+## API Gateway
+Instagram ilovasi barcha mijoz so'rovlari uchun API Gateway orqali o‘tadi. API Gateway quyidagi vazifalarni bajaradi:
+- Autentifikatsiya: Foydalanuvchilarning kirish huquqlarini tekshirish.
+- Tezlikni cheklash: So‘rovlarning oqilona ishlashini ta'minlash.
+- Marshrutlash: So'rovlarni tegishli backend xizmatlariga yo'naltirish.
+
+Bundan tashqari, `API Gateway CDN (Content Delivery Network)` orqali kontentni keshlashni tekshiradi. CDN global miqyosda statik kontent (rasmlar, videolar)ni tarqatadi va tezkor kirish imkonini yaratadi. Agar shlyuz keshlangan kontentni topa olmasa, so‘rov tegishli backend xizmatiga (masalan, foydalanuvchi tasmasini olish yoki media yuklash) yo‘naltiriladi.
+
+## Load Balancer
+Load Balancer kiruvchi trafikni bir nechta serverlar bo‘ylab taqsimlash orqali mavjudlik va miqyoslilikni ta'minlaydi. Bu, tizimning barqarorligini oshiradi va yuqori talablar ostida ham samarali ishlashini ta'minlaydi.
+
+## Bildirishnoma Xizmati
+Instagram foydalanuvchilarni bildirishnomalar orqali xabardor qiladi. Bu xizmat foydalanuvchi xatti-harakatlari, kontent unumdorligi, va tizim ko'rsatkichlarini to'playdi va tahlil qiladi. Bildirishnoma xizmati foydalanuvchi interaktsiyalarini `(likes, comments, followers)` qayd etadi va ularga bildirishnomalar yuboradi.
+
+## Qidiruv Xizmati
+Instagram qidiruv funksiyalarini Elasticsearch bilan integratsiya qiladi. Bu xizmati foydalanuvchilarga quyidagi imkoniyatlarni taqdim etadi:
+Foydalanuvchi izlash
+Hashtaglarni qidirish
+Joylashuvni qidirish
+
+## Taqsimlangan Xabar Almashish
+Instagram yangilanishlarni va xizmatlar o'rtasidagi aloqalarni boshqarish uchun `Kafka` yoki `Rabbit MQ` kabi taqsimlangan xabar almashish tizimlaridan foydalanadi. Bu tizimlar real vaqt rejimida yangilanishlar va ma'lumotlar almashinishini ta'minlaydi.
+
+## Taqsimlangan Kesh Xizmati
+Instagram shuningdek, Redis yoki Memcached kabi taqsimlangan keshlardan foydalanadi. Bu xizmat so'rov javoblarini saqlash orqali tizimni masshtablashga yordam beradi va past kechikishli javoblar taqdim etadi.
+
+## Mikroservis Arxitekturasi
+Instagram mikroservisga asoslangan arxitekturaga amal qiladi, bunda tizim kichikroq, mustaqil ravishda ishlab chiqilishi va kengaytirilishi mumkin bo‘lgan xizmatlarga bo'linadi. Quyida Instagram tomonidan belgilangan umumiy xizmatlar ro‘yxati ko‘rsatilgan.
+Bu tizim dizayni Instagram ilovasining samarali, kengaytiriladigan va yuqori quvvatli ishlashini ta'minlaydi. Har bir xizmatning mustaqil ishlashi, ilovani o‘zgartirish, kengaytirish va yaxshilashni osonlashtiradi.
