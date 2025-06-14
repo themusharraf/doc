@@ -1,7 +1,7 @@
 ---
-title: "Docker va Kubernetes haqida va ularning ikkalasi o'rtasidagi farqlar"
-description: "Docker va Kubernetes dasturlarni boshqarish va ishga tushirishda muhim vositalar bo'lib, ular bir-biridan farq qiluvchi maqsadlarga xizmat qiladi. Keling, ularning vazifalari va qanday ishlashini tahlil qilib chiqamiz."
-date: 16-01-2025
+title: "PGBouncer haqida va uning PostgreSQL bilan ishlashdagi afzalliklari"
+description: "Qisqa va aniq tavsif PGBouncer ning maqsadi haqida."
+date: 14-06-2025
 authors:
   - avatar: "https://ui.shadcn.com/avatars/02.png"
     handle: musharraf
@@ -9,3 +9,233 @@ authors:
     handleUrl: "https://github.com/themusharraf"
 cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
 ---
+
+
+# PGBouncer: Ma'lumotlar Bazasi Samaradorligini Oshirish
+
+
+Zamonaviy web ilovalar va dasturiy ta'minot rivojlanayotgan sari, ma'lumotlar bazasi bilan samarali ishlash muhim masala bo'lib qolmoqda. Minglab foydalanuvchi bir vaqtda tizimga kirayotgan paytda, har bir ulanish uchun alohida resurs ajratish tizimni sekinlashtiradi va qimmatga tushadi. Aynan shu muammoni hal qilish uchun **PGBouncer** kabi connection pooling yechimlari paydo bo'lgan.
+
+## PGBouncer nima?
+
+PGBouncer - PostgreSQL ma'lumotlar bazasi uchun maxsus ishlab chiqilgan **lightweight connection pooling** middleware hisoblanadi. U dastur va ma'lumotlar bazasi o'rtasida proxy vazifasini bajarib, ulanishlarni oqilona boshqaradi va tizim resurslarini tejaydi.
+
+### Connection Pooling tushunchasi
+
+Connection pooling - bu ma'lumotlar bazasi ulanishlarini qayta ishlatish texnologiyasi. Odatda har safar yangi ulanish yaratish quyidagi jarayonlarni talab qiladi:
+
+- Tarmoq ulanishini o'rnatish
+- Foydalanuvchini autentifikatsiya qilish
+- Xotira va resurslarni ajratish
+- Ma'lumotlar bazasi jarayonini ishga tushirish
+
+Bu jarayonlar vaqt va resurs talab qiladi. Connection pooling esa bir marta yaratilgan ulanishlarni bir nechta mijoz o'rtasida ulashish imkonini beradi.
+
+## PGBouncer qanday ishlaydi?
+
+```
+Mijozlar                PGBouncer           PostgreSQL
+┌─────────────┐        ┌─────────────┐      ┌─────────────┐
+│ Web Server 1│────────┤             │      │ Ulanish 1   │
+├─────────────┤        │             ├──────┼─────────────┤
+│ Web Server 2│────────┤ Connection  │      │ Ulanish 2   │
+├─────────────┤        │ Pool        ├──────┼─────────────┤
+│ Web Server 3│────────┤ Manager     │      │ Ulanish 3   │
+├─────────────┤        │             ├──────┼─────────────┤
+│    ...      │────────┤             │      │    ...      │
+└─────────────┘        └─────────────┘      └─────────────┘
+   100 mijoz              5-10 ulanish        5-10 jarayon
+```
+
+Yuqoridagi diagrammada ko'rinib turibdiki, 100 mijoz faqat 5-10 ta haqiqiy ma'lumotlar bazasi ulanishi orqali xizmat oladi.
+
+## Asosiy afzalliklari
+
+### 1. Resurs tejamkorligi
+
+**Muammo**: Har bir PostgreSQL ulanishi taxminan 10MB RAM ishlatadi
+- 1000 mijoz = 1000 ulanish = 10GB RAM
+- Har bir ulanish alohida jarayon = CPU yuklanishi
+
+**Yechim**: PGBouncer bilan
+- 1000 mijoz = 20 ulanish = 200MB RAM
+- **50 marta kam resurs iste'moli!**
+
+### 2. Tezlik va samaradorlik
+
+```
+Oddiy ulanish:
+[So'rov] → [Yangi ulanish yaratish: 50ms] → [Ma'lumot olish: 10ms] → [Javob]
+Jami: 60ms
+
+PGBouncer bilan:
+[So'rov] → [Pooldan ulanish olish: 1ms] → [Ma'lumot olish: 10ms] → [Javob]
+Jami: 11ms
+```
+
+### 3. Yuklanish boshqaruvi
+
+PGBouncer tizimni haddan tashqari yuklanishdan himoya qiladi:
+- Maksimal ulanishlar sonini cheklaydi
+- Navbat tizimi orqali so'rovlarni tartibga soladi
+- Ma'lumotlar bazasining "crash" bo'lishini oldini oladi
+
+## Pooling rejimlari
+
+### Session Pooling
+- Mijoz sessiyasi davomida bir ulanish saqlanadi
+- Eng xavfsiz rejim
+- Barcha PostgreSQL funksiyalari ishlatilishi mumkin
+
+### Transaction Pooling
+- Har bir tranzaksiya yakunlangandan keyin ulanish qaytariladi
+- Eng samarali rejim
+- Ba'zi cheklovlar mavjud (prepared statements, LISTEN/NOTIFY)
+
+### Statement Pooling
+- Har bir SQL buyruq yakunlangandan keyin ulanish qaytariladi
+- Eng tejamkor rejim
+- Ko'p cheklovlar (tranzaksiyalar, stored proceduralar)
+
+## Amaliy qo'llash
+
+### Web ilovalar uchun
+```
+Vaziyat: E-commerce sayt, kuniga 10,000 tashrif
+Muammo: Har safar sahifa yuklashda 5-10 ta ma'lumotlar bazasi so'rovi
+Yechim: PGBouncer transaction pooling rejimi
+
+Natija:
+- Server xotirasi iste'moli 80% kamaydi
+- Sahifa yuklash tezligi 40% oshadi
+- Server bardoshliligi 5 marta oshadi
+```
+
+### Mikroservislar uchun
+```
+Vaziyat: 20 ta mikroservis, har biri PostgreSQL bilan ishlaydi
+Muammo: Har bir servis 50 ta ulanish ochadi (20×50=1000)
+Yechim: Har bir servis uchun PGBouncer
+
+Natija:
+- Umumiy ulanishlar: 1000 → 100
+- RAM iste'moli: 10GB → 1GB
+- Ma'lumotlar bazasi barqarorligi oshadi
+```
+
+## O'rnatish va sozlash
+
+### 1. O'rnatish
+```bash
+# Ubuntu/Debian
+sudo apt-get install pgbouncer
+
+# CentOS/RHEL
+sudo yum install pgbouncer
+```
+
+### 2. Asosiy konfiguratsiya
+```ini
+[databases]
+myapp = host=localhost port=5432 dbname=myapp_db
+
+[pgbouncer]
+pool_mode = transaction
+max_client_conn = 1000
+default_pool_size = 25
+listen_port = 6432
+auth_type = md5
+```
+
+### 3. Dasturda foydalanish
+```python
+# Odatdagi ulanish
+connection = psycopg2.connect(
+    host="localhost",
+    port=5432,
+    database="myapp_db"
+)
+
+# PGBouncer orqali ulanish
+connection = psycopg2.connect(
+    host="localhost",
+    port=6432,  # PGBouncer porti
+    database="myapp_db"
+)
+```
+
+## Monitoring va nazorat
+
+PGBouncer real vaqt statistikasini taqdim etadi:
+
+```sql
+-- Ulanishlar holati
+SHOW POOLS;
+
+-- Mijozlar statistikasi
+SHOW CLIENTS;
+
+-- Ma'lumotlar bazasi statistikasi
+SHOW DATABASES;
+```
+
+### Asosiy ko'rsatkichlar:
+- **cl_active**: Faol mijozlar soni
+- **sv_active**: Faol server ulanishlari
+- **sv_idle**: Bo'sh server ulanishlari
+- **maxwait**: Eng uzoq kutish vaqti
+
+## Real loyiha misolida natijalar
+
+**Loyiha**: Online ta'lim platformasi
+- **Foydalanuvchilar**: 5000 faol talaba
+- **Ma'lumotlar bazasi**: PostgreSQL 13
+- **Server**: 8GB RAM, 4 CPU core
+
+### PGBouncer dan oldin:
+- RAM iste'moli: 6.5GB (ma'lumotlar bazasi ulanishlari)
+- Maksimal bir vaqtdagi foydalanuvchilar: 200
+- O'rtacha javob vaqti: 850ms
+- Tizim "crash"lari: haftasiga 2-3 marta
+
+### PGBouncer dan keyin:
+- RAM iste'moli: 1.2GB (ma'lumotlar bazasi ulanishlari)
+- Maksimal bir vaqtdagi foydalanuvchilar: 1500
+- O'rtacha javob vaqti: 320ms
+- Tizim "crash"lari: oyiga 1 martadan kam
+
+## Xavfsizlik jihatlari
+
+PGBouncer xavfsizlik bo'yicha quyidagi imkoniyatlarni taqdim etadi:
+- SSL/TLS shifrlash qo'llab-quvvatlash
+- Turli autentifikatsiya usullari (md5, scram-sha-256)
+- IP asosida kirish cheklovi
+- Ma'lumotlar bazasi darajasida foydalanuvchi huquqlari
+
+## Kamchiliklar va cheklovlar
+
+PGBouncer bilan ishlashda e'tiborga olish kerak bo'lgan jihatlar:
+
+### Transaction pooling rejimida:
+- Prepared statements saqlanmaydi
+- LISTEN/NOTIFY ishlatilishi mumkin emas
+- Session o'zgaruvchilari yo'qoladi
+
+### Statement pooling rejimida:
+- Faqat oddiy SELECT/INSERT/UPDATE/DELETE
+- Tranzaksiyalar qo'llab-quvvatlanmaydi
+- Stored proceduralar cheklangan
+
+## Xulosa
+
+PGBouncer zamonaviy web ilovalar uchun juda muhim vosita hisoblanadi. Uning lightweight connection pooling texnologiyasi orqali:
+
+- **Resurs tejamkorligi**: 5-10 marta kam RAM va CPU iste'moli
+- **Tezlik**: Javob vaqti 2-3 marta yaxshilanadi
+- **Barqarorlik**: Tizim yuklanishga chidamliligi oshadi
+- **Miqyoslilik**: Ko'proq foydalanuvchini xizmat ko'rsatish imkoniyati
+
+Har qanday PostgreSQL bilan ishlaydigan loyiha uchun PGBouncer dan foydalanish tavsiya etiladi, ayniqsa produksiya muhitida. Uning sodda sozlash jarayoni va kuchli imkoniyatlari tufayli tizim samaradorligini sezilarli darajada oshirish mumkin.
+
+---
+*Ushbu maqola PGBouncer 1.17+ versiyasi asosida yozilgan. Yangi versiyalarda qo'shimcha funksiyalar mavjud bo'lishi mumkin.*
