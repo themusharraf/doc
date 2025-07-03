@@ -1,0 +1,84 @@
+---
+title: "Qisqa kodmi yoki o'qilishi oson kod? Python'da 1 muammo, 2 yechim"
+description: "Python'da bitta muammoni hal qilish uchun yozilgan ikki xil yechim: biri ixcham va to‘g‘ridan-to‘g‘ri, ikkinchisi esa o‘qilishi oson va tushunarli. Siz qaysi tarafdasiz?"
+date: 07-03-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+
+## 🧠 Bitta Muammo – Ikki Yechim: Qaysi biri to‘g‘riroq?
+
+Dasturlashda har doim yagona “to‘g‘ri javob” bo‘lmaydi. Ayniqsa, **Clean Code** va **Best Practice** haqida gap ketganda, har bir dasturchining o‘z uslubi va qarashlari bo‘ladi. Bugun shunday kichik, lekin qiziqarli bir muammoni ko‘rib chiqamiz:
+
+> **Vazifa:** Foydalanuvchining IP manzili orqali u **Nigeriyadan** ekanligini aniqlash.
+
+Buning uchun Python da yozilgan **ikki xil yechim** mavjud:
+
+---
+
+### 🔹 1-Yechim – Qisqa va Minimalistik
+
+```python
+def verify_user_location(ip_address):
+    request = requests.get(f'http://ip-api.com/json/{ip_address}')
+    location_data = json.loads(request.text)
+
+    return location_data.get('country') == 'Nigeria'
+```
+
+#### ➕ Afzalliklari:
+
+* Juda **ixcham**.
+* **Takroriy kod yo‘q**.
+* `==` solishtiruvi allaqachon `True`/`False` qaytargani uchun, **to‘g‘ridan-to‘g‘ri natija** chiqariladi.
+
+#### 💡 Qachon ishlatish kerak?
+
+* Agar jamoa tajribali dasturchilardan iborat bo‘lsa.
+* Kod bazasida ixchamlik va aniqlik ustuvor bo‘lsa.
+
+---
+
+### 🔸 2-Yechim – O‘qish osonroq
+
+```python
+def verify_user_location(ip_address):
+    request = requests.get(f'http://ip-api.com/json/{ip_address}')
+    location_data = json.loads(request.text)
+
+    if location_data.get('country') == 'Nigeria':
+        return True
+    return False
+```
+
+#### ➕ Afzalliklari:
+
+* **Yangi boshlovchilar** uchun tushunarliroq.
+* Mantiq aniq: "Agar `Nigeria` bo‘lsa — `True`, bolmasa — `False`".
+
+#### 💡 Qachon ishlatish kerak?
+
+* O‘qitish jarayonida.
+* Kod bazada aniqlik va **tushunarlilik** talab etilsa.
+
+---
+
+## 👨‍💻 Men nima tanlayman?
+
+Men shaxsan birinchi variantni afzal ko‘raman — u **kamroq kod bilan ko‘proq ma’lumot** beradi. Biroq, bu har doim ham to‘g‘ri degani emas. Har bir loyiha — **kontekst**, **uslub** va **jamoaning kelishuvi** asosida shakllanadi.
+
+---
+
+## 🗣 Siz nima deysiz?
+
+Siz qaysi yondashuvni tanlardingiz?
+- ➡️ 1-mi? Ixchamlikni sevuvchilar uchun.
+- ➡️ 2-mi? O‘qilishi oson, tushunarli variant.
+
+Izohlarda fikrlaringizni kutaman! 😊
+[Allnc Community](https://t.me/allncTeam)
