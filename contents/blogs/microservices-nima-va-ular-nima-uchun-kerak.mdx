@@ -1,0 +1,83 @@
+---
+title: "Mikroxizmatlar (Microservices) nima va nima uchun kerak?"
+description: "Monolitdan mikroxizmatlarga: zamonaviy arxitekturaga o‘tish sabablari, afzalliklari va real ehtiyojlar asosida izoh."
+date: 20-07-2025
+authors:
+  - avatar: "https://ui.shadcn.com/avatars/02.png"
+    handle: musharraf
+    username: Musharraf
+    handleUrl: "https://github.com/themusharraf"
+cover: "https://img.freepik.com/premium-vector/many-monsters-various-colors-doodle-come-bless-birthday-happy_577083-85.jpg?w=826"
+---
+
+## Microservices nima?
+
+Microservices  — bu dasturiy tizimlarni kichik, mustaqil va o‘zaro bog‘liq xizmatlarga ajratish arxitektura uslubidir. Har bir xizmat aniq biznes vazifasini bajaradi: foydalanuvchini ro‘yxatdan o‘tkazish, to‘lovni amalga oshirish yoki email yuborish kabi.
+
+Ular mustaqil tarzda ishlaydi ishlab chiqiladi deploy qilinadi va kerakli hollarda alohida masshtablash mumkin bo‘ladi.
+
+---
+
+### Monolit va Microservices farqi
+
+**Monolit** — butun tizim bitta ilova ichida ishlaydi. Bir qismdagi o‘zgarish butun ilovaga ta’sir qiladi.
+
+**Microservices** — tizim kichik alohida ishlovchi servislar to‘plamidan iborat. Har bir servis o‘zining ma’lumotlar bazasiga va logikasiga ega bo‘ladi.
+
+---
+
+## Monolitdan Microservices ga
+
+Ananaviy **monolit ilovalar**da barcha funksiyalar bitta kod bazasida jamlangan boladi. Bu dastlab soddalik beradi lekin tizim kattalashgani sari quyidagi muammolar paydo boladi:
+
+- Kichik o‘zgarishlar butun tizimni qayta joylashtirishni talab qiladi
+- Kod bazasi murakkab va boshqarilishi qiyin bo‘ladi
+- Bir jamoa hamma funksiya uchun mas’ul bo‘ladi
+- Skalalash (masalan, faqat `auth` xizmatini) juda qiyin
+
+Microservices ushbu muammolarning oldini olish uchun paydo bo‘lgan. Ular yordamida har bir xizmat mustaqil yashaydi.
+
+---
+
+## Microservicesning asosiy afzalliklari
+
+- **Mustaqillik** — har bir xizmat o‘ziga xos va boshqalardan ajratilgan
+- **Xizmatlararo aloqa** – REST, gRPC yoki asinxron (Kafka, RabbitMQ)
+- **Masshtablash oson (Scalability)** — kerakli xizmatlargina alohida ko‘paytiriladi
+- **Tez ishlab chiqish** — har bir jamoa o‘z xizmatini mustaqil ishlaydi
+- **Texnologik erkinlik** — bir servis Python’da boshqasi Go’da bo‘lishi mumkin
+- **Qisqartirilgan xatolik sohasi** — bitta xizmatda xato bo‘lsa boshqalar ishlashda davom etadi
+- **DevOps va CI/CD’ga mos** — Har bir xizmatni mustaqil tarzda testlab joylashtirish mumkin.
+
+---
+
+## Microservices qachon kerak?
+
+- Tizim katta va murakkab bo‘lsa
+- Loyihani ko‘plab jamoalar ishlab chiqayotgan bo‘lsa
+- Har kuni yangilanishlar va CI/CD ishlatilsa
+- Yuqori yuklama (traffic) va global miqyosda foydalanish ko‘zda tutilsa
+
+Misol: foydalanuvchilar ro‘yxatdan o‘tish, login qilish, mahsulotlar katalogini ko‘rish va buyurtma berish – bularning har biri alohida xizmat bo‘lishi mumkin.
+
+---
+
+## E’tibordan chetda qolmasligi kerak bo‘lgan jihatlar
+
+Mikroxizmatlar o‘zining murakkabligiga ega. Ular uchun quyidagilar muhim:
+
+- **Service Discovery** – xizmatlar bir-birini avtomatik aniqlashi
+- **API Gateway** – tashqi dunyo bilan yagona interfeys
+- **Message brokerlar** – Kafka, RabbitMQ kabi vositalar bilan xizmatlararo aloqa
+- **Monitoring va observability** – har bir servisni alohida kuzatish
+- **Distributed tracing** – so‘rovlar oqimini tushunish va aniqlash
+
+---
+
+## Xulosa
+
+---
+
+Microservices — bu katta tizimlarni **modulli, boshqariladigan va samarali** qilish usuli. Lekin, ularning murakkabligi yuqori, va ularni to‘g‘ri rejalashtirmasdan joriy etish tavsiya etilmaydi.
+
+
